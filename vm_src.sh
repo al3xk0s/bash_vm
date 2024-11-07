@@ -142,8 +142,9 @@ function __vm__add_version() {
     
     local app_path="$(__vm__get_app_path "$app")"
 
-    __vm__dir_exists "$existing_version" || echo "Directory $existing_version doesn't not exists"
-    __vm__dir_exists "$existing_version" || return 1
+    ! __vm__dir_exists "$existing_version" && \
+    echo "Directory $existing_version doesn't not exists" && \
+    return 1
 
     ln -s "$existing_version" "$app_path/$version_alias" && \
     return 0
@@ -174,15 +175,17 @@ function __vm__read_version() {
 
     local path="$(__vm__get_app_path "$app")/.current"
 
-    __vm__file_exists "$path" || echo ""
-    __vm__file_exists "$path" || return 0
+    ! __vm__file_exists "$path" && \
+    echo "" && \
+    return 0
     
     local vers=($(cat "$path"))
     vers="${vers[0]}"
 
-    __vm__has_version "$app" "$vers" || echo ""
-    __vm__has_version "$app" "$vers" || __vm__write_version "$app" "" --rm
-    __vm__has_version "$app" "$vers" || return 0
+    ! __vm__has_version "$app" "$vers" && \
+    __vm__write_version "$app" "" --rm && \
+    echo "" && \
+    return 0
 
     echo "$vers"
     return 0
