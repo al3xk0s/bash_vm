@@ -136,7 +136,8 @@ function __vm__add_version() {
 
     __vm__assert_app_exist "$app" || return 1
     __vm__assert_positional_exists existing_version "$existing_version" || return 1
-    __vm__assert_positional_exists version_alias "$version_alias" || return 1
+    
+    [[ -z "$version_alias" ]] && version_alias="$(basename "$existing_version")"
 
     existing_version="$(realpath "$existing_version")"
     
@@ -396,7 +397,7 @@ function __vm__help() {
     echo 'use <app> <version>'
     echo 'version <app>'
     echo 'init <new_app_name> [<path/to/current/version> <new_version_name>]'
-    echo 'add <app> <path/to/current/version> <new_version_name>'
+    echo 'add <app> <path/to/current/version> [<new_version_name>] (basename current/version by default)'
     echo 'rm <app> [<version>]'
     echo 'choised <app>'
     echo 'path <app>'
